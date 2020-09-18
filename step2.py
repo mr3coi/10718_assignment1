@@ -17,6 +17,7 @@ parser.add_argument("--csv-name", type=str, default=None,
 if __name__ == "__main__":
     args = parser.parse_args()
 
+    # Retrieve list of JSON files from step 1
     json_list = [os.path.join(DATA_DIR, item) for item in os.listdir(DATA_DIR)
                                               if os.path.splitext(item)[-1] == ".json"]
     assert len(json_list) > 0, "ERROR: No downloaded JSON file to parse"
@@ -34,9 +35,9 @@ if __name__ == "__main__":
         with open(filepath, 'r') as fp:
             data = encode_csv(json.load(fp)).split('\n')
         if idx > 0:
-            data = data[1:]
+            data = data[1:]  # Discard headers other than the first one
         else:
-            data[0] = data[0].replace(' ', '_')
+            data[0] = data[0].replace(' ', '_')  # Remove whitespaces in column names
         out_fp.write('\n'.join(data))
         line_count += len(data)-1
 
