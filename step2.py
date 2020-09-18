@@ -35,6 +35,8 @@ if __name__ == "__main__":
             data = encode_csv(json.load(fp)).split('\n')
         if idx > 0:
             data = data[1:]
+        else:
+            data[0] = data[0].replace(' ', '_')
         out_fp.write('\n'.join(data))
         line_count += len(data)-1
 
