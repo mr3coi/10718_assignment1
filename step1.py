@@ -38,6 +38,7 @@ VARIABLES = [
 
 # ArgumentParser for cmdline input
 parser = argparse.ArgumentParser(description="Download U.S. Census Bureau data in JSON format")
+parser.add_argument("--data-dir", type=str, help="Directory to store downloaded JSON data")
 parser.add_argument("-d", "--dataset", nargs='*', type=str, default=["acs", "acs5"],
                     help="Target dataset to download, specify all hierarchy as space-separated list")
 parser.add_argument("-y", "--year", type=int, default=2018, help="Target year of the dataset to download")
@@ -121,10 +122,9 @@ if __name__ == "__main__":
 
     # Create directory to collect downloaded data
     try:
-        os.makedirs(DATA_DIR)
+        os.makedirs(args.data_dir)
     except FileExistsError:
-        if not os.path.isdir(DATA_DIR):
-            raise OSError(f"ERROR: {DATA_DIR} already exists and is not a directory")
+        raise OSError(f"ERROR: {args.data_dir} already exists; please remove it before re-running this script")
 
     # Generate list of counties in specified state
     county_list = compile_county_list(args.dataset, args.year, args.state, args.key)
@@ -140,9 +140,10 @@ if __name__ == "__main__":
         ]
         query_link = build_api_query(args.dataset, args.year, VARIABLES, predicates, key=args.key)
         if args.execute:
-            out_name = os.path.join(DATA_DIR, f"{'_'.join(args.dataset)}_{args.year}_{args.state}_{county}.json")
+            out_name = os.path.join(args.data_dir,
+                    f"{'_'.join(args.dataset)}_{args.year}_{args.state}_{county}.json")
             execute_query(query_link, out_name)
         else:
-            print(f">>> Total: {len(county_list)} queries, target dir: {DATA_DIR}")
+            print(f">>> Total: {len(county_list)} queries, target dir: {args.data_dir}")
             print(">>> Sample query:", query_link)
             break
