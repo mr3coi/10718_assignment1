@@ -3,3 +3,6 @@ data/
 *.swp
 *.swo
 *.csv
+
+# Keep credentials local
+credentials.yaml

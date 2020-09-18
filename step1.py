@@ -2,6 +2,7 @@ import os
 import argparse
 import json
 from tqdm import tqdm
+import yaml
 
 # Directory containing downloaded & preprocessed data
 # (Step 2 will access this directory to fetch the data)
@@ -42,9 +43,8 @@ parser.add_argument("-d", "--dataset", nargs='*', type=str, default=["acs", "acs
 parser.add_argument("-y", "--year", type=int, default=2018, help="Target year of the dataset to download")
 parser.add_argument("-s", "--state", type=int, default=12,
                     help="FIPS code for state of interest (default: Florida (12))")
-parser.add_argument("--key", type=str, default="8ada69bde850c247c852ff5eb3382f39127d3564",
-                    help="Key issued by U.S. Census API Data Service, needed for multiple queries \
-                         (specify only if the default key is invalidated")
+parser.add_argument("--credentials", type=str, default="./credentials.yaml",
+                    help="Path to credentials file (contains API key issued by U.S. Census API Data Service")
 parser.add_argument("-t", "--test-query", dest="execute", action="store_false",
                     help="Only output the built query and not run it, for test purposes")
 
@@ -114,6 +114,10 @@ def execute_query(query_link, out_name):
 
 if __name__ == "__main__":
     args = parser.parse_args()
+    
+    # Retrieve API key from credentials
+    with open(args.credentials, 'r') as c:
+        args.key = yaml.safe_load(c.read())["web_resource"]["api_key"]
 
     # Create directory to collect downloaded data
     try:
