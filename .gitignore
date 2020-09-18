@@ -1,8 +1,12 @@
+# Ignore temporary files
 __pycache__/
-data/
 *.swp
 *.swo
 *.csv
+
+# Ignore intermediate files
+data/
+instructions.sql
 
 # Keep credentials local
 credentials.yaml
